@@ -34,6 +34,9 @@ jobs:
           done
           curl -sS -o /tmp/sum.json -H "Authorization: Basic $auth" "$api/users/current/summaries?start=2026-11-10&end=2026-11-17"
           echo "summaries: $(jq -c '[.data[]? | {date: .range.date, total: .grand_total.total_seconds, langs: [.languages[]? | {name,total_seconds}]}]' /tmp/sum.json)"
+          curl -sS -o /tmp/sumall.json -H "Authorization: Basic $auth" "$api/users/current/summaries?start=2026-07-15&end=2026-11-17"
+          echo "summary days: $(jq '.data|length' /tmp/sumall.json)"
+          echo "summary agg: $(jq -c '[.data[].languages[]?] | group_by(.name) | map({name: .[0].name, total: (map(.total_seconds)|add)}) | sort_by(-.total)' /tmp/sumall.json)"
           curl -sS -o /tmp/hb.json -H "Authorization: Basic $auth" "$api/users/current/heartbeats?date=2026-11-13"
           echo "hb sample: $(jq -c '.data[0] | {language,category,entity,time,is_write,user_agent}' /tmp/hb.json)"
 
