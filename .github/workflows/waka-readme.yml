@@ -20,24 +20,22 @@ jobs:
         env:
           WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
         run: |
-          for range in last_7_days last_year all_time; do
-            code=$(curl -sS -o /tmp/waka-$range.json -w '%{http_code}' \
-              -H "Authorization: Basic $(printf '%s' "$WAKATIME_API_KEY" | base64 -w0)" \
-              "https://wakatime.com/api/v1/users/current/stats/$range")
-            echo "$range http=$code up_to_date=$(jq -r '.data.is_up_to_date' /tmp/waka-$range.json)"
-            jq -r '.data.languages[]? | "  \(.name) \(.total_seconds)"' /tmp/waka-$range.json | head -6
-          done
           auth=$(printf '%s' "$WAKATIME_API_KEY" | base64 -w0)
-          echo "oauth user: $(curl -sS -H "Authorization: Basic $auth" https://wakatime.com/api/v1/users/current | jq -r '.data.username')"
-          day=$(TZ=Asia/Jakarta date +%F)
-          curl -sS -o /tmp/waka-hb.json -H "Authorization: Basic $auth" "https://wakatime.com/api/v1/users/current/heartbeats?date=$day"
-          echo "heartbeats $day: $(jq '.data | length' /tmp/waka-hb.json)"
-          jq -r '.data[0:3][]? | "  \(.time) \(.language) \(.entity)"' /tmp/waka-hb.json
-          for d in 2026-08-20 2026-11-13 2026-11-09; do
-            curl -sS -o /tmp/waka-hb-$d.json -H "Authorization: Basic $auth" "https://wakatime.com/api/v1/users/current/heartbeats?date=$d"
-            echo "heartbeats $d: $(jq '.data | length' /tmp/waka-hb-$d.json)"
+          api=https://api.wakatime.com/api/v1
+          curl -sS -o /tmp/sb.json -H "Authorization: Basic $auth" "$api/users/current/statusbar/today"
+          echo "statusbar today: $(jq -c '.data | {total: .grand_total.total_seconds, langs: [.languages[]? | {name,total_seconds}]}' /tmp/sb.json)"
+          curl -sS -o /tmp/me.json -H "Authorization: Basic $auth" "$api/users/current"
+          echo "user: $(jq -c '.data | {username,id,created_at,plan,timezone}' /tmp/me.json)"
+          echo "user bools: $(jq -c '.data | with_entries(select(.value|type=="boolean"))' /tmp/me.json)"
+          echo "user keys: $(jq -c '.data | keys' /tmp/me.json)"
+          for r in last_7_days all_time; do
+            curl -sS -o /tmp/st-$r.json -H "Authorization: Basic $auth" "$api/users/current/stats/$r"
+            echo "$r: $(jq -c '.data | {total_seconds, categories: [.categories[]? | {name,total_seconds}], projects: [.projects[]? | {name,total_seconds}]}' /tmp/st-$r.json)"
           done
-          jq -c '.data | {status,is_stuck,is_already_updating,percent_calculated,timeout,writes_only,username,user_id,range,start,end,modified_at,created_at,total_seconds}' /tmp/waka-all_time.json
+          curl -sS -o /tmp/sum.json -H "Authorization: Basic $auth" "$api/users/current/summaries?start=2026-11-10&end=2026-11-17"
+          echo "summaries: $(jq -c '[.data[]? | {date: .range.date, total: .grand_total.total_seconds, langs: [.languages[]? | {name,total_seconds}]}]' /tmp/sum.json)"
+          curl -sS -o /tmp/hb.json -H "Authorization: Basic $auth" "$api/users/current/heartbeats?date=2026-11-13"
+          echo "hb sample: $(jq -c '.data[0] | {language,category,entity,time,is_write,user_agent}' /tmp/hb.json)"
 
       - name: Render WakaTime stats
         env:
