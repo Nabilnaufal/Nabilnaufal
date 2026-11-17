@@ -33,7 +33,6 @@ const nabil = {
 export default nabil;
 ```
 
-## wakatime
 
 <!--START_SECTION:waka-->
 
