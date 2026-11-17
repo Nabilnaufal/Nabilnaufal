@@ -1,6 +1,4 @@
-```js
-// nabil.js
-// skill level: 1-10
+
 const nabil = {
   name: "Nabil",
   roles: ["backend developer", "mobile developer"],
@@ -13,20 +11,20 @@ const nabil = {
   },
 
   languages: {
-    PHP: 9,        // backend
-    Dart: 7,       // mobile
-    JavaScript: 6, // web interaction
-    "C++": 5,      // fundamentals
-    Lua: 7,        // Neovim
-    "HTML/CSS": 8, // interfaces
+    PHP: 9,        
+    Dart: 7,       
+    JavaScript: 6, 
+    "C++": 5,      
+    Lua: 7,        
+    "HTML/CSS": 8, 
   },
 
   frameworks: {
-    Laravel: 9,        // APIs · MVC
-    Flutter: 7,        // cross-platform
-    Bootstrap: 6,      // responsive UI
-    "Tailwind CSS": 6, // utility-first
-    Blade: 7,          // templating
+    Laravel: 9,        
+    Flutter: 7,        
+    Bootstrap: 6,     
+    "Tailwind CSS": 6, 
+    Blade: 7,          
   },
 
   interests: ["Linux", "Neovim", "terminal ricing", "automation"],
@@ -35,7 +33,7 @@ const nabil = {
 export default nabil;
 ```
 
-## wakatime
+
 
 <!--START_SECTION:waka-->
 <!--END_SECTION:waka-->
