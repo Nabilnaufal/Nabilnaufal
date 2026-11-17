@@ -37,8 +37,7 @@ jobs:
             curl -sS -o /tmp/waka-hb-$d.json -H "Authorization: Basic $auth" "https://wakatime.com/api/v1/users/current/heartbeats?date=$d"
             echo "heartbeats $d: $(jq '.data | length' /tmp/waka-hb-$d.json)"
           done
-          echo "all_time keys: $(jq -c '.data | keys' /tmp/waka-all_time.json)"
-          head -c 400 /tmp/waka-all_time.json
+          jq -c '.data | {status,is_stuck,is_already_updating,percent_calculated,timeout,writes_only,username,user_id,range,start,end,modified_at,created_at,total_seconds}' /tmp/waka-all_time.json
 
       - name: Render WakaTime stats
         env:
