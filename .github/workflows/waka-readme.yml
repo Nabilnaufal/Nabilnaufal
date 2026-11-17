@@ -33,6 +33,12 @@ jobs:
           curl -sS -o /tmp/waka-hb.json -H "Authorization: Basic $auth" "https://wakatime.com/api/v1/users/current/heartbeats?date=$day"
           echo "heartbeats $day: $(jq '.data | length' /tmp/waka-hb.json)"
           jq -r '.data[0:3][]? | "  \(.time) \(.language) \(.entity)"' /tmp/waka-hb.json
+          for d in 2026-08-20 2026-11-13 2026-11-09; do
+            curl -sS -o /tmp/waka-hb-$d.json -H "Authorization: Basic $auth" "https://wakatime.com/api/v1/users/current/heartbeats?date=$d"
+            echo "heartbeats $d: $(jq '.data | length' /tmp/waka-hb-$d.json)"
+          done
+          echo "all_time keys: $(jq -c '.data | keys' /tmp/waka-all_time.json)"
+          head -c 400 /tmp/waka-all_time.json
 
       - name: Render WakaTime stats
         env:
