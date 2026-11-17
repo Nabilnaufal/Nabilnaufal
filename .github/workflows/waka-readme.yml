@@ -16,6 +16,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check stats freshness
+        env:
+          WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+        run: |
+          for range in last_7_days last_year all_time; do
+            code=$(curl -sS -o /tmp/waka-$range.json -w '%{http_code}' \
+              -H "Authorization: Basic $(printf '%s' "$WAKATIME_API_KEY" | base64 -w0)" \
+              "https://wakatime.com/api/v1/users/current/stats/$range")
+            echo "$range http=$code up_to_date=$(jq -r '.data.is_up_to_date' /tmp/waka-$range.json)"
+            jq -r '.data.languages[]? | "  \(.name) \(.total_seconds)"' /tmp/waka-$range.json | head -6
+          done
+
       - name: Render WakaTime stats
         env:
           WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
