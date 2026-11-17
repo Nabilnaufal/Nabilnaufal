@@ -1,6 +1,8 @@
 name: Update WakaTime stats
 
 on:
+  push:
+    branches: [main]
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
@@ -28,13 +30,20 @@ jobs:
           else
             echo "whitespace=no"
           fi
-          for range in last_7_days all_time; do
+
+          check() {
+            range="$1"
             code=$(curl -sS -o /tmp/waka.json -w '%{http_code}' \
               -H "Authorization: Basic $(printf '%s' "$WAKATIME_API_KEY" | base64 -w0)" \
               "https://wakatime.com/api/v1/users/current/stats/$range")
             echo "range=$range http=$code"
-            jq -r '.errors // .error // .message // empty' /tmp/waka.json 2>/dev/null || true
-          done
+            error=$(jq -r '.errors // .error // .message // empty' /tmp/waka.json 2>/dev/null)
+            [ -n "$error" ] && echo "error=$error"
+            [ "$code" = "200" ]
+          }
+
+          check last_7_days
+          check all_time
 
       - uses: athul/waka-readme@master
         with:
