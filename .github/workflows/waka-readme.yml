@@ -12,6 +12,30 @@ jobs:
   waka-readme:
     runs-on: ubuntu-latest
     steps:
+      - name: Check WakaTime token
+        env:
+          WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+        run: |
+          set +e
+          echo "length=${#WAKATIME_API_KEY}"
+          case "$WAKATIME_API_KEY" in
+            waka_tok_*) echo "type=oauth" ;;
+            *-*-*-*-*) echo "type=uuid" ;;
+            *) echo "type=unknown" ;;
+          esac
+          if printf '%s' "$WAKATIME_API_KEY" | grep -q '[[:space:]]'; then
+            echo "whitespace=yes"
+          else
+            echo "whitespace=no"
+          fi
+          for range in last_7_days all_time; do
+            code=$(curl -sS -o /tmp/waka.json -w '%{http_code}' \
+              -H "Authorization: Basic $(printf '%s' "$WAKATIME_API_KEY" | base64 -w0)" \
+              "https://wakatime.com/api/v1/users/current/stats/$range")
+            echo "range=$range http=$code"
+            jq -r '.errors // .error // .message // empty' /tmp/waka.json 2>/dev/null || true
+          done
+
       - uses: athul/waka-readme@master
         with:
           WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}

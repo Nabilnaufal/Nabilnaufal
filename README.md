@@ -1,4 +1,4 @@
-
+```js
 const nabil = {
   name: "Nabil",
   roles: ["backend developer", "mobile developer"],
@@ -11,20 +11,20 @@ const nabil = {
   },
 
   languages: {
-    PHP: 9,        
-    Dart: 7,       
-    JavaScript: 6, 
-    "C++": 5,      
-    Lua: 7,        
-    "HTML/CSS": 8, 
+    PHP: 9,
+    Dart: 7,
+    JavaScript: 6,
+    "C++": 5,
+    Lua: 7,
+    "HTML/CSS": 8,
   },
 
   frameworks: {
-    Laravel: 9,        
-    Flutter: 7,        
-    Bootstrap: 6,     
-    "Tailwind CSS": 6, 
-    Blade: 7,          
+    Laravel: 9,
+    Flutter: 7,
+    Bootstrap: 6,
+    "Tailwind CSS": 6,
+    Blade: 7,
   },
 
   interests: ["Linux", "Neovim", "terminal ricing", "automation"],
@@ -33,7 +33,7 @@ const nabil = {
 export default nabil;
 ```
 
-
+## wakatime
 
 <!--START_SECTION:waka-->
 <!--END_SECTION:waka-->
