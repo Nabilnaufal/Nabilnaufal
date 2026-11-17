@@ -34,9 +34,28 @@ jobs:
           done
           curl -sS -o /tmp/sum.json -H "Authorization: Basic $auth" "$api/users/current/summaries?start=2026-11-10&end=2026-11-17"
           echo "summaries: $(jq -c '[.data[]? | {date: .range.date, total: .grand_total.total_seconds, langs: [.languages[]? | {name,total_seconds}]}]' /tmp/sum.json)"
-          curl -sS -o /tmp/sumall.json -H "Authorization: Basic $auth" "$api/users/current/summaries?start=2026-07-15&end=2026-11-17"
-          echo "summary days: $(jq '.data|length' /tmp/sumall.json)"
-          echo "summary agg: $(jq -c '[.data[].languages[]?] | group_by(.name) | map({name: .[0].name, total: (map(.total_seconds)|add)}) | sort_by(-.total)' /tmp/sumall.json)"
+          curl -sS -o /tmp/att.json -H "Authorization: Basic $auth" "$api/users/current/all_time_since_today"
+          echo "all_time_since_today: $(jq -c '.data | {total_seconds, text, start: .range.start_date, end: .range.end_date}' /tmp/att.json)"
+          python3 - <<'PY'
+          import os, json, base64, urllib.request, datetime
+          auth = base64.b64encode(os.environ['WAKATIME_API_KEY'].encode()).decode()
+          api = 'https://api.wakatime.com/api/v1'
+          start, end = datetime.date(2026, 7, 15), datetime.date(2026, 11, 17)
+          totals, total_all = {}, 0.0
+          while start <= end:
+              chunk_end = min(start + datetime.timedelta(days=13), end)
+              url = f'{api}/users/current/summaries?start={start}&end={chunk_end}'
+              req = urllib.request.Request(url, headers={'Authorization': 'Basic ' + auth})
+              with urllib.request.urlopen(req, timeout=60) as r:
+                  data = json.load(r)
+              for day in data.get('data') or []:
+                  total_all += (day.get('grand_total') or {}).get('total_seconds') or 0
+                  for lang in day.get('languages') or []:
+                      totals[lang['name']] = totals.get(lang['name'], 0) + lang.get('total_seconds', 0)
+              start = chunk_end + datetime.timedelta(days=1)
+          print('summaries total:', round(total_all, 1))
+          print('summaries langs:', sorted(((k, round(v, 1)) for k, v in totals.items()), key=lambda x: -x[1]))
+          PY
           curl -sS -o /tmp/hb.json -H "Authorization: Basic $auth" "$api/users/current/heartbeats?date=2026-11-13"
           echo "hb sample: $(jq -c '.data[0] | {language,category,entity,time,is_write,user_agent}' /tmp/hb.json)"
 
