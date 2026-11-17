@@ -16,7 +16,7 @@ API = os.environ.get("WAKATIME_API_URL", "https://wakatime.com/api/v1").rstrip("
 TOKEN = os.environ["WAKATIME_API_KEY"]
 START = "<!--START_SECTION:waka-->"
 END = "<!--END_SECTION:waka-->"
-LANG_COUNT = 5
+LANG_COUNT = 8
 BAR_WIDTH = 25
 
 
@@ -65,8 +65,8 @@ def render(languages):
     for name, seconds in ranked:
         percent = seconds / total_seconds * 100 if total_seconds else 0
         filled = round(percent / 100 * BAR_WIDTH)
-        bar = "#" * filled + "." * (BAR_WIDTH - filled)
-        lines.append(f"{name:<13}{fmt_time(seconds):<20}{bar} {percent:5.1f}%")
+        bar = "▓" * filled + "." * (BAR_WIDTH - filled)
+        lines.append(f"{name:<13}{fmt_time(seconds):<20}{bar} {percent:05.2f} %")
     return "\n".join(lines)
 
 
