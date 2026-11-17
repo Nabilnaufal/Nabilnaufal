@@ -83,6 +83,7 @@ def render(languages):
 
 def main():
     block = render(fetch_languages())
+    print(block)
     text = README.read_text()
     section = f"{START}\n\n```txt\n{block}\n```\n\n{END}"
     updated = re.sub(re.escape(START) + r".*?" + re.escape(END), section, text, flags=re.S)
