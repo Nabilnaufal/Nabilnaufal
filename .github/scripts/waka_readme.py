@@ -18,6 +18,7 @@ START = "<!--START_SECTION:waka-->"
 END = "<!--END_SECTION:waka-->"
 LANG_COUNT = 8
 BAR_WIDTH = 25
+BAR_STYLE = "⣀⣄⣤⣦⣶⣷⣿"
 
 
 def fetch_languages():
@@ -47,9 +48,20 @@ def fetch_languages():
 
 def fmt_time(seconds):
     hours, minutes = int(seconds // 3600), int(seconds % 3600 // 60)
-    if hours:
+    if hours and minutes:
         return f"{hours} hr{'s' if hours != 1 else ''} {minutes} min{'s' if minutes != 1 else ''}"
+    if hours:
+        return f"{hours} hr{'s' if hours != 1 else ''}"
     return f"{minutes} min{'s' if minutes != 1 else ''}"
+
+
+def make_graph(percent):
+    markers = len(BAR_STYLE) - 1
+    proportion = percent / 100 * BAR_WIDTH
+    bar = BAR_STYLE[-1] * int(proportion + 0.5 / markers)
+    remainder = int((proportion - len(bar)) * markers + 0.5)
+    bar += BAR_STYLE[remainder] if remainder > 0 else ""
+    return bar + BAR_STYLE[0] * (BAR_WIDTH - len(bar))
 
 
 def render(languages):
@@ -64,9 +76,8 @@ def render(languages):
     lines = []
     for name, seconds in ranked:
         percent = seconds / total_seconds * 100 if total_seconds else 0
-        filled = round(percent / 100 * BAR_WIDTH)
-        bar = "▓" * filled + "." * (BAR_WIDTH - filled)
-        lines.append(f"{name:<13}{fmt_time(seconds):<20}{bar} {percent:05.2f} %")
+        pct = f"{percent:.2f}".zfill(5)
+        lines.append(f"{name:<22}{fmt_time(seconds):<22}{make_graph(percent)}   {pct} %")
     return "\n".join(lines)
 
 
