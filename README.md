@@ -33,11 +33,16 @@ const nabil = {
 export default nabil;
 ```
 
+## wakatime
 
 <!--START_SECTION:waka-->
 
 ```txt
-No activity tracked
+PHP          200 hrs 0 mins      ########.................  31.8%
+Blade        100 hrs 0 mins      ####.....................  15.9%
+Lua          90 hrs 0 mins       ####.....................  14.3%
+JavaScript   80 hrs 0 mins       ###......................  12.7%
+Dart         55 hrs 0 mins       ##.......................   8.7%
 ```
 
 <!--END_SECTION:waka-->

@@ -1,0 +1,14 @@
+{
+  "PHP": 200,
+  "Blade": 100,
+  "Lua": 90,
+  "JavaScript": 80,
+  "Dart": 55,
+  "Python": 40,
+  "TypeScript": 20,
+  "Vue.js": 15,
+  "Java": 10,
+  "Kotlin": 10,
+  "C++": 8,
+  "Go": 1
+}

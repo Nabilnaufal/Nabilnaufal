@@ -12,13 +12,18 @@ jobs:
   waka-readme:
     runs-on: ubuntu-latest
     steps:
-      - uses: athul/waka-readme@master
-        with:
+      - uses: actions/checkout@v4
+
+      - name: Render WakaTime stats
+        env:
           WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
-          SHOW_TITLE: false
-          SHOW_TIME: true
-          SHOW_TOTAL: false
-          TIME_RANGE: all_time
-          LANG_COUNT: 5
-          BLOCKS: ".#"
-          CODE_LANG: txt
+        run: python3 .github/scripts/waka_readme.py
+
+      - name: Commit README
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --cached --quiet && exit 0
+          git commit -m "Update WakaTime stats"
+          git push
