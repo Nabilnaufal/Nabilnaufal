@@ -3,11 +3,12 @@ const nabil = {
   name: "Nabil",
   roles: ["backend developer", "mobile developer"],
 
-  about: "Backend with Laravel, mobile with Flutter, and Linux for everything else.",
+  about: "Backend with Express,Fullstack With Laravel, mobile with Flutter, and Linux for everything.",
   dailyDriver: {
     os: "Arch Linux",
     wm: "Hyprland",
     editor: "Neovim",
+    AI agent: "OpenCode",
   },
 
   languages: {
@@ -21,13 +22,14 @@ const nabil = {
 
   frameworks: {
     Laravel: 9,
+    Exress:7
     Flutter: 7,
     Bootstrap: 6,
     "Tailwind CSS": 6,
     Blade: 7,
   },
 
-  interests: ["Linux", "Neovim", "terminal ricing", "automation"],
+  interests: ["Linux", "Neovim", "terminal ricing","open source"],
 };
 
 export default nabil;
